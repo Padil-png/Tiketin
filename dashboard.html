@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Pemilik Event - EventHive</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container">
+      <div class="navbar-left">
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-toggle" aria-label="Menu">
+          <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+        <a href="index.html" class="navbar-logo">
+          <div class="logo-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+          </div>
+          <span>EventHive</span>
+        </a>
+        
+        <div class="navbar-links">
+          <a href="index.html" class="nav-link" data-i18n="nav.home">Beranda</a>
+          <a href="events.html" class="nav-link" data-i18n="nav.events">Jelajahi</a>
+          <a href="auth.html?redirect=create-event.html" class="nav-link nav-create-link" data-i18n="nav.create">Buat Event</a>
+        </div>
+      </div>
+      
+      <div class="navbar-right">
+        <!-- Navbar Search (desktop only) -->
+        <form action="events.html" method="GET" class="navbar-search">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" id="navbar-search-input" name="q" placeholder="Cari event, artis, kota...">
+        </form>
+        
+        <div class="navbar-actions">
+          <!-- Mobile Search Icon -->
+          <button class="mobile-icon-btn mobile-only-icon" aria-label="Search">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </button>
+
+          <!-- Language Toggle -->
+          <div class="lang-toggle">
+            <button class="lang-option active" data-lang="id">ID</button>
+            <button class="lang-option" data-lang="en">EN</button>
+          </div>
+          
+          <!-- Cart -->
+          <a href="checkout.html" class="cart-btn" aria-label="Cart">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+            <span class="cart-badge">1</span>
+          </a>
+          
+          <!-- Mobile Profile Icon -->
+          <a href="auth.html" class="mobile-icon-btn mobile-only-icon" aria-label="Profile">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          </a>
+          
+          <!-- Login / Profile (Desktop) -->
+          <a href="auth.html" class="btn btn-sm btn-primary nav-login-link" data-i18n="nav.login">Masuk / Daftar</a>
+          
+          <div class="profile-container hidden" style="position: relative;">
+            <button class="profile-btn"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></button>
+            <div class="profile-dropdown">
+              <a href="dashboard.html">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <span data-i18n="nav.dashboard">Dashboard</span>
+              </a>
+              <div class="dropdown-divider"></div>
+              <button class="logout-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                <span data-i18n="nav.logout">Keluar</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu">
+    <a href="index.html" class="nav-link" data-i18n="nav.home">Beranda</a>
+    <a href="events.html" class="nav-link" data-i18n="nav.events">Jelajahi</a>
+    <a href="auth.html?redirect=create-event.html" class="nav-link nav-create-link" data-i18n="nav.create">Buat Event</a>
+    <div class="mobile-actions">
+      <a href="auth.html" class="btn btn-primary nav-login-link" style="width: 100%" data-i18n="nav.login">Masuk / Daftar</a>
+      <button class="btn btn-outline logout-btn profile-container hidden" style="width: 100%" data-i18n="nav.logout">Keluar</button>
+    </div>
+  </div>
+
+  <main class="dashboard-page page-content">
+    <div class="container">
+      
+      <div class="dashboard-header reveal">
+        <div>
+          <h1 id="welcome-msg">Halo, Kreator!</h1>
+          <p>Kelola event Anda dan pantau penjualan tiket</p>
+        </div>
+        <a href="create-event.html" class="btn btn-primary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          Buat Event Baru
+        </a>
+      </div>
+      
+      <!-- Stats -->
+      <div class="dashboard-stats reveal stagger-1">
+        <div class="dash-stat-card">
+          <div class="dash-stat-icon violet">📅</div>
+          <div class="dash-stat-info">
+            <h4>Total Event</h4>
+            <div class="dash-stat-val" id="stat-my-events">0</div>
+          </div>
+        </div>
+        <div class="dash-stat-card">
+          <div class="dash-stat-icon cyan">🎟️</div>
+          <div class="dash-stat-info">
+            <h4>Tiket Terjual</h4>
+            <div class="dash-stat-val" id="stat-my-tickets">0</div>
+          </div>
+        </div>
+        <div class="dash-stat-card">
+          <div class="dash-stat-icon success">💰</div>
+          <div class="dash-stat-info">
+            <h4>Pendapatan Kotor</h4>
+            <div class="dash-stat-val text-success" id="stat-my-revenue" style="font-size: var(--text-lg)">Rp 0</div>
+          </div>
+        </div>
+        <div class="dash-stat-card">
+          <div class="dash-stat-icon warning">⏳</div>
+          <div class="dash-stat-info">
+            <h4>Status Verifikasi</h4>
+            <div class="dash-stat-val" id="stat-my-pending" style="font-size: var(--text-lg)">0 Menunggu</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="dashboard-layout">
+        <!-- Main: Event List -->
+        <div class="dash-main reveal stagger-2">
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <h3>Daftar Event Saya</h3>
+            </div>
+            
+            <div class="dash-event-list" id="my-events-container">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+        
+        <!-- Sidebar: Withdraw -->
+        <div class="dash-sidebar reveal-left stagger-3">
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <h3>Tarik Dana</h3>
+            </div>
+            
+            <div class="withdraw-balance">
+              <h4>Saldo Tersedia</h4>
+              <div class="balance-amount" id="balance-val">Rp 0</div>
+            </div>
+            
+            <form id="withdraw-form" class="form-group mt-4">
+              <label class="form-label">Nominal Penarikan</label>
+              <input type="number" id="wd-amount" class="form-input mb-3" placeholder="Minimal Rp 50.000" min="50000" required>
+              
+              <label class="form-label">Rekening Bank Tujuan</label>
+              <select id="wd-bank" class="form-input mb-3" required>
+                <option value="BCA">BCA - Bank Central Asia</option>
+                <option value="Mandiri">Mandiri</option>
+                <option value="BNI">BNI</option>
+                <option value="BRI">BRI</option>
+              </select>
+              <input type="text" id="wd-account" class="form-input mb-4" placeholder="Nomor Rekening" required>
+              
+              <button type="submit" id="btn-withdraw" class="btn btn-primary" style="width: 100%">Tarik Dana</button>
+            </form>
+            
+            <div class="withdraw-history">
+              <h4 class="mb-4" style="font-size: var(--text-sm); color: var(--text-muted)">Riwayat Penarikan</h4>
+              <div class="withdraw-history-list" id="wd-history-container">
+                <!-- Rendered via JS -->
+                <div class="text-center text-muted" style="font-size: 12px">Belum ada riwayat penarikan</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </main>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/navbar.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/events.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check Auth
+      const sessionStr = localStorage.getItem('eventhive_session');
+      if (!sessionStr) {
+        window.location.href = 'auth.html?redirect=dashboard.html';
+        return;
+      }
+      
+      const user = JSON.parse(sessionStr);
+      document.getElementById('welcome-msg').textContent = `Halo, ${user.name}!`;
+      document.getElementById('user-initial').textContent = user.name.charAt(0).toUpperCase();
+      
+      // Setup Data
+      const myEvents = window.api.getEventsByUser(user.id);
+      
+      // Fake some stats based on dummy events for the demo if user has no events yet
+      // To make the dashboard look active, let's assign a random mock event to this user if they just registered
+      if (myEvents.length === 0) {
+        const allEvents = window.api.getAllEvents();
+        // Give them ownership of evt_1 just for demo purposes
+        const demoEventIndex = allEvents.findIndex(e => e.id === 'evt_1');
+        if (demoEventIndex > -1) {
+          allEvents[demoEventIndex].userId = user.id;
+          localStorage.setItem('eventhive_events', JSON.stringify(allEvents));
+          myEvents.push(allEvents[demoEventIndex]);
+        }
+      }
+      
+      let totalTickets = 0;
+      let totalRevenue = 0;
+      let pendingCount = 0;
+      
+      // Render Events
+      const container = document.getElementById('my-events-container');
+      
+      if (myEvents.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📝</div>
+            <h3>Belum Ada Event</h3>
+            <p class="text-secondary mb-4">Anda belum membuat event apapun. Mulai buat event pertama Anda sekarang!</p>
+          </div>
+        `;
+      } else {
+        let html = '';
+        myEvents.forEach(e => {
+          // Calculate fake sales based on stock vs original stock (assumed to be 50% sold for demo)
+          const isPending = e.status === 'pending';
+          if (isPending) pendingCount++;
+          
+          let soldTickets = 0;
+          let revenue = 0;
+          
+          if (!isPending) {
+            e.tiers.forEach(t => {
+              // Simulated logic: 50% sold
+              const sold = Math.floor(t.stock * 1); // just a fake number
+              soldTickets += sold;
+              revenue += sold * t.price;
+            });
+            totalTickets += soldTickets;
+            totalRevenue += revenue;
+          }
+          
+          let badgeClass = isPending ? 'badge-warning' : 'badge-success';
+          let statusText = isPending ? 'Menunggu Verifikasi' : 'Aktif';
+          
+          html += `
+            <div class="dash-event-item">
+              <div class="dash-event-img">
+                <img src="${e.image}" alt="${e.title}" onerror="this.src='https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=200&q=80'">
+              </div>
+              <div class="dash-event-info">
+                <h4>${e.title}</h4>
+                <div class="dash-event-meta">
+                  <span>${window.api.formatDate(e.date)}</span>
+                  <span>•</span>
+                  <span>${soldTickets} Terjual</span>
+                  <span>•</span>
+                  <span class="text-success">${window.cart.formatCurrency(revenue)}</span>
+                </div>
+              </div>
+              <div class="dash-event-actions">
+                <span class="badge ${badgeClass}">${statusText}</span>
+                ${isPending ? `<button class="btn btn-sm btn-outline verify-btn" data-id="${e.id}" title="Simulasi Admin Approve">Simulasi Approve</button>` : ''}
+              </div>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+        
+        // Setup Simulasi Approve
+        document.querySelectorAll('.verify-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const id = btn.getAttribute('data-id');
+            const all = window.api.getAllEvents();
+            const idx = all.findIndex(ev => ev.id === id);
+            if (idx > -1) {
+              all[idx].status = 'approved';
+              localStorage.setItem('eventhive_events', JSON.stringify(all));
+              window.toast.show('Event berhasil diverifikasi dan dipublish!', 'success');
+              setTimeout(() => location.reload(), 1500);
+            }
+          });
+        });
+      }
+      
+      // Update Stats
+      document.getElementById('stat-my-events').textContent = myEvents.length;
+      document.getElementById('stat-my-tickets').textContent = totalTickets;
+      document.getElementById('stat-my-revenue').textContent = window.cart.formatCurrency(totalRevenue);
+      document.getElementById('stat-my-pending').textContent = `${pendingCount} Menunggu`;
+      
+      // Withdraw Logic
+      const wdHistory = JSON.parse(localStorage.getItem('eventhive_withdrawals') || '[]');
+      const userWd = wdHistory.filter(w => w.userId === user.id);
+      
+      let totalWd = userWd.reduce((sum, w) => sum + parseInt(w.amount), 0);
+      let balance = totalRevenue - totalWd;
+      
+      document.getElementById('balance-val').textContent = window.cart.formatCurrency(balance);
+      
+      // Render History
+      const histContainer = document.getElementById('wd-history-container');
+      if (userWd.length > 0) {
+        histContainer.innerHTML = userWd.map(w => `
+          <div class="history-item">
+            <div class="history-item-info">
+              <h5>Tarik Dana - ${w.bank}</h5>
+              <span>${new Date(w.date).toLocaleDateString()}</span>
+            </div>
+            <div class="history-item-status">
+              <div class="amount text-success">-${window.cart.formatCurrency(w.amount)}</div>
+              <span class="badge badge-success" style="font-size: 10px">Sukses</span>
+            </div>
+          </div>
+        `).join('');
+      }
+      
+      // Withdraw Form
+      const wdForm = document.getElementById('withdraw-form');
+      const wdBtn = document.getElementById('btn-withdraw');
+      const amountInput = document.getElementById('wd-amount');
+      
+      wdForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const amount = parseInt(amountInput.value);
+        const bank = document.getElementById('wd-bank').value;
+        const account = document.getElementById('wd-account').value;
+        
+        if (amount > balance) {
+          window.toast.show('Saldo tidak mencukupi', 'error');
+          return;
+        }
+        
+        wdBtn.disabled = true;
+        wdBtn.innerHTML = '<div class="spinner spinner-sm" style="border-top-color: white"></div>';
+        
+        setTimeout(() => {
+          const newWd = {
+            id: 'wd_' + Date.now(),
+            userId: user.id,
+            amount: amount,
+            bank: bank,
+            account: account,
+            date: new Date().toISOString(),
+            status: 'success'
+          };
+          
+          wdHistory.push(newWd);
+          localStorage.setItem('eventhive_withdrawals', JSON.stringify(wdHistory));
+          
+          window.toast.show('Penarikan dana berhasil!', 'success');
+          setTimeout(() => location.reload(), 1500);
+        }, 1500);
+      });
+    });
+  </script>
+</body>
+</html>

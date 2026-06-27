@@ -1,0 +1,145 @@
+/* ============================================
+   EventHive — Auth Page
+   ============================================ */
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8) var(--container-padding);
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-page .hero-bg {
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-hero);
+  z-index: 0;
+}
+
+.auth-card {
+  position: relative;
+  z-index: 1;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-10);
+  width: 100%;
+  max-width: 440px;
+  box-shadow: var(--shadow-xl);
+}
+
+.auth-card .auth-logo {
+  text-align: center;
+  margin-bottom: var(--space-8);
+}
+
+.auth-card .auth-logo h2 {
+  font-size: var(--text-2xl);
+  margin-top: var(--space-3);
+}
+
+.auth-card .auth-logo p {
+  font-size: var(--text-sm);
+  margin-top: var(--space-1);
+}
+
+.auth-card .tabs {
+  margin-bottom: var(--space-8);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.auth-form .btn-primary {
+  width: 100%;
+  padding: var(--space-4);
+  font-size: var(--text-base);
+  margin-top: var(--space-2);
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin: var(--space-4) 0;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border-glass);
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: var(--space-6);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.auth-footer a {
+  color: var(--violet-400);
+  font-weight: var(--fw-semibold);
+  transition: color var(--duration-fast);
+}
+
+.auth-footer a:hover {
+  color: var(--text-accent);
+}
+
+.password-toggle {
+  position: relative;
+}
+
+.password-toggle input {
+  padding-right: 44px;
+}
+
+.password-toggle button {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.password-toggle button:hover {
+  color: var(--text-primary);
+}
+
+/* Mobile Popup Style */
+@media (max-width: 768px) {
+  .auth-page {
+    padding: 0;
+    align-items: flex-end;
+    background: rgba(15, 23, 42, 0.6);
+  }
+  .hero-bg, .hero-particles {
+    display: none;
+  }
+  .auth-card {
+    border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+    border: none;
+    animation: slideUp 0.3s ease-out;
+  }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}

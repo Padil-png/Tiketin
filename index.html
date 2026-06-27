@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EventHive - Platform Tiket Event Profesional</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/home.css">
+  
+  <style>
+    .card-date-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: white;
+      border-radius: var(--radius-sm);
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      overflow: hidden;
+      z-index: 3;
+      width: 50px;
+    }
+    .card-date-badge .month {
+      background: var(--error);
+      color: white;
+      font-size: 10px;
+      font-weight: bold;
+      text-transform: uppercase;
+      padding: 2px 0;
+    }
+    .card-date-badge .date {
+      color: var(--slate-900);
+      font-size: 18px;
+      font-weight: bold;
+      padding: 4px 0;
+      background: white;
+    }
+    
+    .city-pills {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      scrollbar-width: none;
+    }
+    .city-pills::-webkit-scrollbar { display: none; }
+    
+    .city-pill {
+      padding: 8px 16px;
+      background: white;
+      border: 1px solid var(--slate-300);
+      border-radius: var(--radius-full);
+      color: var(--slate-700);
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all var(--duration-fast);
+    }
+    .city-pill:hover {
+      border-color: var(--primary-400);
+      color: var(--primary-600);
+    }
+    .city-pill.active {
+      background: var(--primary-600);
+      border-color: var(--primary-600);
+      color: white;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* ---- Navbar Search ---- */
+    .navbar-search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--slate-100);
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-full);
+      padding: 6px 16px;
+      flex: 1;
+      max-width: 360px;
+      margin: 0 var(--space-6);
+      transition: all 0.2s;
+    }
+    .navbar-search:focus-within {
+      background: white;
+      border-color: var(--primary-400);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    .navbar-search svg {
+      color: var(--slate-400);
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+    }
+    .navbar-search input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 0.85rem;
+      color: var(--slate-800);
+      min-width: 0;
+    }
+    .navbar-search input::placeholder { color: var(--slate-400); }
+    @media (max-width: 900px) {
+      .navbar-search { display: none; }
+    }
+
+    /* ---- Promo Carousel (Peek Style) ---- */
+    .pt-desktop { padding-top: 90px; }
+    @media (max-width: 900px) { .pt-desktop { padding-top: var(--space-8); } }
+    
+    .promo-carousel-section {
+      padding-bottom: var(--space-8);
+      background: transparent;
+      overflow: hidden;
+    }
+
+    .promo-carousel-wrapper {
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+
+    .promo-track {
+      display: flex;
+      transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+      will-change: transform;
+      /* We'll use JS to handle the translateX with padding offset */
+    }
+
+    .promo-slide {
+      flex-shrink: 0;
+      width: 80%;
+      position: relative;
+      aspect-ratio: 21 / 9;
+      overflow: hidden;
+      border-radius: 16px;
+      margin: 0 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      transition: opacity 0.4s, transform 0.4s;
+    }
+
+    .promo-slide.inactive {
+      opacity: 0.5;
+      transform: scale(0.95);
+    }
+
+    .promo-slide.active-slide {
+      opacity: 1;
+      transform: scale(1);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    }
+
+    @media (max-width: 768px) {
+      .promo-slide {
+        width: 88%;
+        margin: 0 6px;
+        aspect-ratio: 16 / 9;
+      }
+    }
+
+    .promo-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Gradient overlay */
+    .promo-slide-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        0deg,
+        rgba(15, 23, 42, 0.75) 0%,
+        rgba(15, 23, 42, 0.3) 40%,
+        transparent 70%
+      );
+      z-index: 1;
+    }
+
+    .promo-slide-content {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 2;
+      padding: clamp(16px, 3vw, 32px);
+      color: white;
+    }
+
+    .promo-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: white;
+      width: fit-content;
+      margin-bottom: 8px;
+    }
+
+    .promo-slide-content h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(1rem, 2vw, 1.6rem);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 6px;
+      color: white;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    .promo-slide-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.85);
+    }
+
+    .promo-slide-meta span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .promo-slide-meta svg {
+      width: 13px;
+      height: 13px;
+      opacity: 0.7;
+    }
+
+    .promo-slide-price {
+      display: none;
+    }
+
+    .promo-slide-cta {
+      display: none;
+    }
+
+    /* Arrows */
+    .promo-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 5;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(4px);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--slate-700);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      transition: all 0.2s;
+    }
+
+    .promo-arrow:hover {
+      background: white;
+      transform: translateY(-50%) scale(1.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .promo-prev { left: clamp(4px, 2vw, 20px); }
+    .promo-next { right: clamp(4px, 2vw, 20px); }
+
+    /* Dots */
+    .promo-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: var(--space-4);
+      padding-bottom: 4px;
+    }
+
+    .promo-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--slate-300);
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+      padding: 0;
+    }
+
+    .promo-dot.active {
+      background: var(--primary-600);
+      width: 28px;
+      border-radius: 4px;
+    }
+
+    @media (max-width: 640px) {
+      .promo-arrow {
+        width: 30px;
+        height: 30px;
+      }
+      .promo-slide-content h2 {
+        font-size: 0.95rem;
+      }
+      .promo-slide-meta {
+        font-size: 0.7rem;
+        gap: 8px;
+      }
+      .promo-tag {
+        font-size: 0.6rem;
+        padding: 3px 8px;
+      }
+    }
+  </style>
+  <script>
+    // Sync auth state BEFORE render to prevent glitch
+    if(localStorage.getItem('eventhive_session')){document.documentElement.classList.add('is-logged-in')}
+  </script>
+  <style>
+    /* Hide login button when logged in, hide profile when not logged in — NO glitch */
+    html.is-logged-in .nav-login-link { display: none !important; }
+    html:not(.is-logged-in) .profile-container { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container">
+      <div class="navbar-left">
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-toggle" aria-label="Menu">
+          <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+        <a href="index.html" class="navbar-logo">
+          <div class="logo-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+          </div>
+          <span>EventHive</span>
+        </a>
+        
+        <div class="navbar-links">
+          <a href="index.html" class="nav-link active" data-i18n="nav.home">Beranda</a>
+          <a href="events.html" class="nav-link" data-i18n="nav.events">Jelajahi</a>
+          <a href="auth.html?redirect=create-event.html" class="nav-link nav-create-link" data-i18n="nav.create">Buat Event</a>
+        </div>
+      </div>
+      
+      <div class="navbar-right">
+        <!-- Navbar Search (desktop only) -->
+        <form action="events.html" method="GET" class="navbar-search">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" id="navbar-search-input" name="q" placeholder="Cari event, artis, kota...">
+        </form>
+        
+        <div class="navbar-actions">
+          <!-- Mobile Search Icon -->
+          <button class="mobile-icon-btn mobile-only-icon" aria-label="Search">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </button>
+
+          <!-- Language Toggle -->
+          <div class="lang-toggle">
+            <button class="lang-option active" data-lang="id">ID</button>
+            <button class="lang-option" data-lang="en">EN</button>
+          </div>
+          
+          <!-- Cart -->
+          <a href="checkout.html" class="cart-btn" aria-label="Cart">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+            <span class="cart-badge">1</span>
+          </a>
+          
+          <!-- Mobile Profile Icon -->
+          <a href="auth.html" class="mobile-icon-btn mobile-only-icon" aria-label="Profile">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          </a>
+          
+          <!-- Login / Profile (Desktop) -->
+          <a href="auth.html" class="btn btn-sm btn-primary nav-login-link" data-i18n="nav.login">Masuk / Daftar</a>
+          
+          <div class="profile-container hidden" style="position: relative;">
+            <button class="profile-btn"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></button>
+            <div class="profile-dropdown">
+              <a href="dashboard.html">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <span data-i18n="nav.dashboard">Dashboard</span>
+              </a>
+              <div class="dropdown-divider"></div>
+              <button class="logout-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                <span data-i18n="nav.logout">Keluar</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu">
+    <a href="index.html" class="nav-link active" data-i18n="nav.home">Beranda</a>
+    <a href="events.html" class="nav-link" data-i18n="nav.events">Jelajahi</a>
+    <a href="auth.html?redirect=create-event.html" class="nav-link nav-create-link" data-i18n="nav.create">Buat Event</a>
+    <div class="mobile-actions">
+      <a href="auth.html" class="btn btn-primary nav-login-link" style="width: 100%" data-i18n="nav.login">Masuk / Daftar</a>
+      <button class="btn btn-outline logout-btn profile-container hidden" style="width: 100%" data-i18n="nav.logout">Keluar</button>
+    </div>
+  </div>
+
+  <!-- Banner Carousel — Event Terfavorit (Peek Style) -->
+  <section class="promo-carousel-section pt-desktop">
+    <div class="promo-carousel-wrapper" id="promo-carousel">
+      <div class="promo-track" id="promo-track">
+        <!-- Slides generated by JS -->
+      </div>
+      <!-- Navigation Arrows -->
+      <button class="promo-arrow promo-prev" id="promo-prev" aria-label="Previous">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+      <button class="promo-arrow promo-next" id="promo-next" aria-label="Next">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+      <!-- Dots -->
+      <div class="promo-dots" id="promo-dots"></div>
+    </div>
+  </section>
+
+  <!-- 1. Categories Section -->
+  <section class="categories-section section" style="background: white;">
+    <div class="container">
+      <div class="section-header reveal">
+        <h2>Jelajahi Kategori</h2>
+      </div>
+      <div class="categories-scroll reveal-scale stagger-2" id="categories-container">
+        <!-- Generated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Featured/Popular Events Section -->
+  <section class="featured-section section">
+    <div class="container">
+      <div class="section-header reveal">
+        <div>
+          <h2>Event Terpopuler</h2>
+          <p class="text-secondary mt-2">Acara yang paling banyak diminati saat ini</p>
+        </div>
+      </div>
+      
+      <div class="scroll-section-wrapper">
+        <button class="scroll-arrow scroll-prev" data-target="featured-events-container" aria-label="Scroll Left">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <div class="featured-grid" id="featured-events-container">
+          <!-- Generated by JS -->
+        </div>
+        <button class="scroll-arrow scroll-next" data-target="featured-events-container" aria-label="Scroll Right">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+      </div>
+      
+      <div class="text-center mt-8">
+        <a href="events.html" class="btn btn-outline btn-lg reveal">
+          Lihat Semua Event
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Calendar / Upcoming Events Section -->
+  <section class="calendar-section section">
+    <div class="container">
+      <div class="section-header reveal" style="display: flex; flex-direction: column; align-items: center; text-align: center; justify-content: center;">
+        <h2 style="font-size: 2rem;">Kalender Event</h2>
+        <p class="text-secondary mt-2" style="max-width: 500px;">Daftar agenda event yang akan segera berlangsung dalam waktu dekat.</p>
+      </div>
+      
+      <div class="agenda-list" id="upcoming-events-container">
+        <!-- Generated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. City Filter Section -->
+  <section class="city-section section">
+    <div class="container">
+      <div class="section-header reveal">
+        <div>
+          <h2>Event di Kotamu</h2>
+          <p class="text-secondary mt-2">Pilih kota untuk melihat daftar event eksklusif di wilayah tersebut</p>
+        </div>
+      </div>
+      
+      <div class="city-pills mb-6" id="city-pills-container">
+        <!-- Generated by JS -->
+      </div>
+      
+      <div class="scroll-section-wrapper">
+        <button class="scroll-arrow scroll-prev" data-target="city-events-container" aria-label="Scroll Left">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <div class="city-grid" id="city-events-container">
+          <!-- Generated by JS -->
+        </div>
+        <button class="scroll-arrow scroll-next" data-target="city-events-container" aria-label="Scroll Right">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3 style="display: flex; align-items: center; gap: 8px;">
+            <div class="logo-icon" style="width:24px;height:24px;font-size:14px;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg></div>
+            EventHive
+          </h3>
+          <p>Platform tiket event online resmi dan terpercaya. Solusi lengkap untuk penyelenggara dan peserta acara.</p>
+          
+          <!-- Payment Methods -->
+          <div class="mt-4">
+            <span class="text-sm text-secondary fw-semibold">Pilihan Metode Pembayaran:</span>
+            <div class="payment-methods mt-2" style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <div style="background: white; padding: 4px 8px; border: 1px solid var(--slate-200); border-radius: 4px; font-weight: bold; color: #00529C; font-size: 11px; font-style: italic;">BCA</div>
+              <div style="background: white; padding: 4px 8px; border: 1px solid var(--slate-200); border-radius: 4px; font-weight: bold; color: #00A651; font-size: 11px; font-style: italic;">GOPAY</div>
+              <div style="background: white; padding: 4px 8px; border: 1px solid var(--slate-200); border-radius: 4px; font-weight: bold; color: #E72A2E; font-size: 11px; font-style: italic;">QRIS</div>
+              <div style="background: white; padding: 4px 8px; border: 1px solid var(--slate-200); border-radius: 4px; font-weight: bold; color: #F87315; font-size: 11px; font-style: italic;">ShopeePay</div>
+              <div style="background: white; padding: 4px 8px; border: 1px solid var(--slate-200); border-radius: 4px; font-weight: bold; color: #1C3E69; font-size: 11px; font-style: italic;">Mandiri</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="footer-col">
+          <h5>Jelajahi</h5>
+          <ul>
+            <li><a href="events.html">Semua Event</a></li>
+            <li><a href="events.html?category=Musik">Musik</a></li>
+            <li><a href="events.html?category=Workshop">Workshop</a></li>
+            <li><a href="events.html?category=Seminar">Seminar</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-col">
+          <h5>Untuk Kreator</h5>
+          <ul>
+            <li><a href="auth.html?redirect=create-event.html">Buat Event</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="#">Sistem Harga</a></li>
+            <li><a href="#">Panduan Kreator</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-col">
+          <h5>Perusahaan</h5>
+          <ul>
+            <li><a href="#">Tentang Kami</a></li>
+            <li><a href="#">Pusat Bantuan</a></li>
+            <li><a href="#">Syarat & Ketentuan</a></li>
+            <li><a href="#">Kebijakan Privasi</a></li>
+            <li><a href="#">Hak Cipta</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2026 EventHive. Hak Cipta Dilindungi.</p>
+        <div class="footer-socials">
+          <a href="#">Instagram</a>
+          <a href="#">Twitter</a>
+          <a href="#">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Core JS -->
+  <script src="js/i18n.js"></script>
+  <script src="js/navbar.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/events.js"></script>
+  
+  <!-- Page Specific JS -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      
+      // Safe currency format that never throws
+      function safeFormatPrice(amount) {
+        try {
+          if (amount === 0) return 'GRATIS';
+          if (window.cart && window.cart.formatCurrency) return window.cart.formatCurrency(amount);
+          return 'Rp ' + amount.toLocaleString('id-ID');
+        } catch(e) {
+          return 'Rp ' + amount.toLocaleString('id-ID');
+        }
+      }
+
+      // Safe date format
+      function safeFormatDate(dateStr) {
+        try {
+          if (window.api && window.api.formatDate) return window.api.formatDate(dateStr);
+          return new Date(dateStr).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+        } catch(e) {
+          return dateStr;
+        }
+      }
+
+      function getShortMonth(dateStr) {
+        try {
+          var d = new Date(dateStr);
+          return new Intl.DateTimeFormat('id-ID', { month: 'short' }).format(d);
+        } catch(e) { return ''; }
+      }
+
+      function getDateNum(dateStr) {
+        try { return new Date(dateStr).getDate(); } catch(e) { return ''; }
+      }
+      
+      // Helper: create event card
+      function createEventCard(event, delayClass) {
+        delayClass = delayClass || '';
+        var startingPrice = window.api.getStartingPrice(event.tiers);
+        var formattedPrice = safeFormatPrice(startingPrice);
+        var date = safeFormatDate(event.date);
+        var monthShort = getShortMonth(event.date);
+        var dateNum = getDateNum(event.date);
+        
+        return '<a href="event-detail.html?id=' + event.id + '" class="event-card reveal-scale ' + delayClass + '">' +
+          '<div class="card-image">' +
+            '<img src="' + event.image + '" alt="' + event.title + '" onerror="this.src=\'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=800&q=80\'">' +
+            '<div class="card-badge badge badge-primary">' + event.category + '</div>' +
+          '</div>' +
+          '<div class="card-body">' +
+            '<div class="card-meta">' +
+              '<div class="card-meta-item">' +
+                '<span>' + event.location + '</span>' +
+              '</div>' +
+              '<div class="card-meta-item">' +
+                '<span>' + date + '</span>' +
+              '</div>' +
+            '</div>' +
+            '<h4>' + event.title + '</h4>' +
+            '<div class="card-price">' +
+              '<span class="card-price-label">Mulai dari</span>' +
+              '<span class="card-price-amount">' + formattedPrice + '</span>' +
+              '<span class="card-status">Tiket Tersedia</span>' +
+            '</div>' +
+          '</div>' +
+        '</a>';
+      }
+
+      // 1. Render Categories
+      function renderCategories() {
+        var categories = [
+          { name: 'Musik', icon: '🎵', count: 45 },
+          { name: 'Workshop', icon: '🛠️', count: 28 },
+          { name: 'Seminar', icon: '🎓', count: 32 },
+          { name: 'Festival', icon: '🎪', count: 12 },
+          { name: 'Olahraga', icon: '🏃', count: 8 },
+          { name: 'Seni & Budaya', icon: '🎭', count: 15 }
+        ];
+        
+        var catContainer = document.getElementById('categories-container');
+        if (!catContainer) return;
+        catContainer.innerHTML = '';
+        categories.forEach(function(cat) {
+          catContainer.innerHTML += '<a href="events.html?category=' + cat.name + '" class="category-card">' +
+            '<span class="category-icon">' + cat.icon + '</span>' +
+            '<div class="category-name">' + cat.name + '</div>' +
+            '<div class="category-count">' + cat.count + ' event</div>' +
+          '</a>';
+        });
+      }
+
+      // 2. Render Popular Events
+      function renderFeaturedEvents() {
+        try {
+          var container = document.getElementById('featured-events-container');
+          if (!container) return;
+          
+          var events = window.api.getPublicEvents().filter(function(e) { return e.trending; }).slice(0, 6);
+          
+          if (events.length === 0) {
+            container.innerHTML = '<div style="text-align:center; padding: 40px; color: var(--slate-500); grid-column: 1/-1;">Belum ada event populer.</div>';
+            return;
+          }
+          container.innerHTML = events.map(function(e, i) { return createEventCard(e, 'stagger-' + (i+1)); }).join('');
+        } catch(err) {
+          console.error('renderFeaturedEvents error:', err);
+        }
+      }
+
+      // 3. Render Upcoming (Calendar) Events
+      function renderUpcomingEvents() {
+        try {
+          var container = document.getElementById('upcoming-events-container');
+          if (!container) return;
+          
+          var events = window.api.getUpcomingEvents(5);
+          
+          if (events.length === 0) {
+            container.innerHTML = '<div style="text-align:center; padding: 40px; color: var(--slate-500);">Belum ada agenda terdekat.</div>';
+            return;
+          }
+
+          var html = '';
+          events.forEach(function(e, i) {
+            var monthShort = getShortMonth(e.date);
+            var dateNum = getDateNum(e.date);
+            var startingPrice = safeFormatPrice(window.api.getStartingPrice(e.tiers));
+
+            html += '<a href="event-detail.html?id=' + e.id + '" class="agenda-item reveal-scale stagger-' + (i+1) + '" style="text-decoration:none; color:inherit;">' +
+              '<div class="agenda-date">' +
+                '<span class="month">' + monthShort + '</span>' +
+                '<span class="day">' + dateNum + '</span>' +
+              '</div>' +
+              '<div class="agenda-info">' +
+                '<h4>' + e.title + '</h4>' +
+                '<p>' +
+                  '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>' +
+                  e.venue + ', ' + e.location +
+                '</p>' +
+                '<p style="margin-top:4px; font-weight:bold; color:var(--primary-600);">' + startingPrice + '</p>' +
+              '</div>' +
+              '<div class="agenda-action">' +
+                '<span class="btn btn-outline">Lihat Detail</span>' +
+              '</div>' +
+            '</a>';
+          });
+          container.innerHTML = html;
+        } catch(err) {
+          console.error('renderUpcomingEvents error:', err);
+        }
+      }
+
+      // 4. Render Events By City
+      function renderCityEvents() {
+        try {
+          var pillsContainer = document.getElementById('city-pills-container');
+          var container = document.getElementById('city-events-container');
+          if (!pillsContainer || !container) return;
+
+          var cities = window.api.getCities();
+          if (cities.length === 0) return;
+          
+          var activeCity = cities[0];
+
+          function updateCityGrid() {
+            var events = window.api.getEventsByCity(activeCity).slice(0, 3);
+            container.innerHTML = events.length > 0 ? 
+              events.map(function(ev, i) { return createEventCard(ev, 'stagger-' + (i+1)); }).join('') : 
+              '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--slate-500);">Belum ada event di kota ini.</div>';
+          }
+
+          function renderPills() {
+            pillsContainer.innerHTML = cities.map(function(city) {
+              return '<button class="city-pill ' + (city === activeCity ? 'active' : '') + '" data-city="' + city + '">' + city + '</button>';
+            }).join('');
+            
+            var pills = pillsContainer.querySelectorAll('.city-pill');
+            pills.forEach(function(pill) {
+              pill.addEventListener('click', function(e) {
+                activeCity = e.target.getAttribute('data-city');
+                renderPills();
+                updateCityGrid();
+              });
+            });
+          }
+
+          renderPills();
+          updateCityGrid();
+        } catch(err) {
+          console.error('renderCityEvents error:', err);
+        }
+      }
+
+      // 5. Render Promo Banner Carousel
+      function renderPromoCarousel() {
+        try {
+          var track = document.getElementById('promo-track');
+          var dotsContainer = document.getElementById('promo-dots');
+          var prevBtn = document.getElementById('promo-prev');
+          var nextBtn = document.getElementById('promo-next');
+          if (!track || !dotsContainer) return;
+
+          // Get trending events for banners
+          var bannerEvents = window.api.getPublicEvents().filter(function(e) { return e.trending; }).slice(0, 4);
+          if (bannerEvents.length === 0) {
+            document.querySelector('.promo-carousel-section').style.display = 'none';
+            return;
+          }
+
+          // Render slides
+          var slidesHtml = '';
+          bannerEvents.forEach(function(ev) {
+            var price = safeFormatPrice(window.api.getStartingPrice(ev.tiers));
+            var date = safeFormatDate(ev.date);
+            slidesHtml += '<div class="promo-slide">' +
+              '<img src="' + ev.image + '" alt="' + ev.title + '" onerror="this.src=\'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=80\'">' +
+              '<div class="promo-slide-overlay"></div>' +
+              '<div class="promo-slide-content">' +
+                '<div class="promo-tag">🔥 Event Favorit</div>' +
+                '<h2>' + ev.title + '</h2>' +
+                '<div class="promo-slide-meta">' +
+                  '<span>' +
+                    '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>' +
+                    date +
+                  '</span>' +
+                  '<span>' +
+                    '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>' +
+                    ev.venue + ', ' + ev.location +
+                  '</span>' +
+                '</div>' +
+                '<div class="promo-slide-price">Mulai dari ' + price + '</div>' +
+                '<a href="event-detail.html?id=' + ev.id + '" class="promo-slide-cta">Beli Tiket →</a>' +
+              '</div>' +
+            '</div>';
+          });
+          track.innerHTML = slidesHtml;
+
+          // Render dots
+          var dotsHtml = '';
+          for (var i = 0; i < bannerEvents.length; i++) {
+            dotsHtml += '<button class="promo-dot' + (i === 0 ? ' active' : '') + '" data-index="' + i + '"></button>';
+          }
+          dotsContainer.innerHTML = dotsHtml;
+
+          // Carousel logic
+          var currentSlide = 0;
+          var totalSlides = bannerEvents.length;
+          var autoInterval = null;
+          var slides = track.querySelectorAll('.promo-slide');
+
+          function goToSlide(index) {
+            if (index < 0) index = totalSlides - 1;
+            if (index >= totalSlides) index = 0;
+            currentSlide = index;
+            
+            // Calculate offset dynamically based on actual margin
+            var wrapper = document.getElementById('promo-carousel');
+            var wrapperWidth = wrapper.offsetWidth;
+            var style = window.getComputedStyle(slides[0]);
+            var marginLeft = parseFloat(style.marginLeft);
+            var marginRight = parseFloat(style.marginRight);
+            var slideWidth = slides[0].offsetWidth + marginLeft + marginRight;
+            var offset = (currentSlide * slideWidth) - (wrapperWidth - slides[0].offsetWidth) / 2 + marginLeft;
+            track.style.transform = 'translateX(' + (-offset) + 'px)';
+            
+            // Update active/inactive classes
+            slides.forEach(function(s, i) {
+              s.classList.toggle('active-slide', i === currentSlide);
+              s.classList.toggle('inactive', i !== currentSlide);
+            });
+            
+            // Update dots
+            var dots = dotsContainer.querySelectorAll('.promo-dot');
+            dots.forEach(function(d, i) {
+              d.classList.toggle('active', i === currentSlide);
+            });
+          }
+
+          function startAuto() {
+            stopAuto();
+            autoInterval = setInterval(function() { goToSlide(currentSlide + 1); }, 3000);
+          }
+
+          function stopAuto() {
+            if (autoInterval) clearInterval(autoInterval);
+          }
+
+          // Initial position
+          goToSlide(0);
+          startAuto();
+          
+          // Recalculate on resize
+          window.addEventListener('resize', function() { goToSlide(currentSlide); });
+
+          // Arrow controls
+          if (prevBtn) prevBtn.addEventListener('click', function() { stopAuto(); goToSlide(currentSlide - 1); startAuto(); });
+          if (nextBtn) nextBtn.addEventListener('click', function() { stopAuto(); goToSlide(currentSlide + 1); startAuto(); });
+
+          // Dot controls
+          dotsContainer.addEventListener('click', function(e) {
+            var dot = e.target.closest('.promo-dot');
+            if (!dot) return;
+            stopAuto();
+            goToSlide(parseInt(dot.getAttribute('data-index')));
+            startAuto();
+          });
+
+          // Touch/swipe support
+          var startX = 0;
+          var carousel = document.getElementById('promo-carousel');
+          carousel.addEventListener('touchstart', function(e) { startX = e.touches[0].clientX; stopAuto(); }, {passive: true});
+          carousel.addEventListener('touchend', function(e) {
+            var diff = startX - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 50) {
+              goToSlide(diff > 0 ? currentSlide + 1 : currentSlide - 1);
+            }
+            startAuto();
+          }, {passive: true});
+        } catch(err) {
+          console.error('renderPromoCarousel error:', err);
+        }
+      }
+
+      // Execute all renders
+      try {
+        renderPromoCarousel();
+        renderCategories();
+        renderFeaturedEvents();
+        renderUpcomingEvents();
+        renderCityEvents();
+      } catch(err) {
+        console.error('Global render error:', err);
+      }
+      
+      // Re-render on language change
+      document.addEventListener('languageChanged', function() {
+        renderUpcomingEvents();
+        renderFeaturedEvents();
+        renderCityEvents();
+      });
+
+      // ---- Scroll Arrow Handlers ----
+      document.querySelectorAll('.scroll-arrow').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const targetId = btn.dataset.target;
+          const container = document.getElementById(targetId);
+          if (!container) return;
+          const scrollAmount = container.offsetWidth * 0.6;
+          if (btn.classList.contains('scroll-prev')) {
+            container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+          } else {
+            container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

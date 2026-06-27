@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EventHive - Jelajahi Event</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/events-page.css">
+  <script>
+    if(localStorage.getItem('eventhive_session')){document.documentElement.classList.add('is-logged-in')}
+  </script>
+  <style>
+    html.is-logged-in .nav-login-link { display: none !important; }
+    html:not(.is-logged-in) .profile-container { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar (Same as index.html) -->
+  <nav class="navbar scrolled">
+    <div class="container">
+      <div class="navbar-left">
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-toggle" aria-label="Menu">
+          <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+        <a href="index.html" class="navbar-logo">
+          <div class="logo-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+          </div>
+          <span>EventHive</span>
+        </a>
+        
+        <div class="navbar-links">
+          <a href="index.html" class="nav-link" data-i18n="nav.home">Beranda</a>
+          <a href="events.html" class="nav-link active" data-i18n="nav.events">Jelajahi</a>
+          <a href="auth.html?redirect=create-event.html" class="nav-link nav-create-link" data-i18n="nav.create">Buat Event</a>
+        </div>
+      </div>
+      
+      <div class="navbar-right">
+        <!-- Navbar Search (desktop only) -->
+        <form action="events.html" method="GET" class="navbar-search">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" id="navbar-search-input" name="q" placeholder="Cari event, artis, kota...">
+        </form>
+        
+        <div class="navbar-actions">
+          <!-- Mobile Search Icon -->
+          <button class="mobile-icon-btn mobile-only-icon" aria-label="Search">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </button>
+
+          <!-- Language Toggle -->
+          <div class="lang-toggle">
+            <button class="lang-option active" data-lang="id">ID</button>
+            <button class="lang-option" data-lang="en">EN</button>
+          </div>
+          
+          <!-- Cart -->
+          <a href="checkout.html" class="cart-btn" aria-label="Cart">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+            <span class="cart-badge">1</span>
+          </a>
+          
+          <!-- Mobile Profile Icon -->
+          <a href="auth.html" class="mobile-icon-btn mobile-only-icon" aria-label="Profile">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          </a>
+          
+          <!-- Login / Profile (Desktop) -->
+          <a href="auth.html" class="btn btn-sm btn-primary nav-login-link" data-i18n="nav.login">Masuk / Daftar</a>
+          
+          <div class="profile-container hidden" style="position: relative;">
+            <button class="profile-btn"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></button>
+            <div class="profile-dropdown">
+              <a href="dashboard.html">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <span data-i18n="nav.dashboard">Dashboard</span>
+              </a>
+              <div class="dropdown-divider"></div>
+              <button class="logout-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                <span data-i18n="nav.logout">Keluar</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu">
+    <a href="index.html" class="nav-link" data-i18n="nav.home">Beranda</a>
+    <a href="events.html" class="nav-link active" data-i18n="nav.events">Jelajahi</a>
+    <a href="auth.html?redirect=create-event.html" class="nav-link nav-create-link" data-i18n="nav.create">Buat Event</a>
+    <div class="mobile-actions">
+      <a href="auth.html" class="btn btn-primary nav-login-link" style="width: 100%" data-i18n="nav.login">Masuk / Daftar</a>
+      <button class="btn btn-outline logout-btn profile-container hidden" style="width: 100%" data-i18n="nav.logout">Keluar</button>
+    </div>
+  </div>
+
+  <main class="events-page page-content">
+    <div class="container">
+      
+      <!-- Header -->
+      <header class="events-page-header reveal">
+        <h1 data-i18n="browse.title">Jelajahi Semua Event</h1>
+        <p class="text-secondary" data-i18n="browse.subtitle">Temukan berbagai event menarik dari berbagai kategori</p>
+      </header>
+
+      <!-- Filters -->
+      <div class="filters-bar reveal stagger-1">
+        <select class="filter-select" id="filter-category">
+          <option value="all" data-i18n="browse.filter.category">Semua Kategori</option>
+          <option value="Musik">Musik</option>
+          <option value="Workshop">Workshop</option>
+          <option value="Seminar">Seminar</option>
+          <option value="Festival">Festival</option>
+          <option value="Olahraga">Olahraga</option>
+          <option value="Seni & Budaya">Seni & Budaya</option>
+        </select>
+        
+        <select class="filter-select" id="filter-date">
+          <option value="all" data-i18n="browse.filter.date.all">Semua Tanggal</option>
+          <option value="today" data-i18n="browse.filter.date.today">Hari Ini</option>
+          <option value="this_week" data-i18n="browse.filter.date.week">Minggu Ini</option>
+          <option value="this_month" data-i18n="browse.filter.date.month">Bulan Ini</option>
+        </select>
+        
+        <select class="filter-select" id="filter-sort">
+          <option value="newest" data-i18n="browse.filter.sort">Urutkan: Terbaru</option>
+          <option value="date_asc">Waktu Terdekat</option>
+          <option value="date_desc">Waktu Terjauh</option>
+          <option value="price_asc">Harga Terendah</option>
+          <option value="price_desc">Harga Tertinggi</option>
+        </select>
+      </div>
+
+      <!-- Categories Container -->
+      <div id="browse-container">
+        <!-- Rendered by JS -->
+      </div>
+      
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3 style="display: flex; align-items: center; gap: 8px;">
+            <div class="logo-icon" style="width:24px;height:24px;font-size:14px;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg></div>
+            EventHive
+          </h3>
+          <p>Platform tiket event online resmi dan terpercaya. Solusi lengkap untuk penyelenggara dan peserta acara.</p>
+          
+          <div class="mt-4">
+            <span class="text-sm text-secondary fw-semibold">Pilihan Metode Pembayaran:</span>
+            <div class="payment-methods mt-2" style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <div style="background: white; padding: 4px 8px; border: 1px solid var(--slate-200); border-radius: 4px; font-weight: bold; color: #00529C; font-size: 11px; font-style: italic;">BCA</div>
+              <div style="background: white; padding: 4px 8px; border: 1px solid var(--slate-200); border-radius: 4px; font-weight: bold; color: #00A651; font-size: 11px; font-style: italic;">GOPAY</div>
+              <div style="background: white; padding: 4px 8px; border: 1px solid var(--slate-200); border-radius: 4px; font-weight: bold; color: #E72A2E; font-size: 11px; font-style: italic;">QRIS</div>
+              <div style="background: white; padding: 4px 8px; border: 1px solid var(--slate-200); border-radius: 4px; font-weight: bold; color: #F87315; font-size: 11px; font-style: italic;">ShopeePay</div>
+              <div style="background: white; padding: 4px 8px; border: 1px solid var(--slate-200); border-radius: 4px; font-weight: bold; color: #1C3E69; font-size: 11px; font-style: italic;">Mandiri</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="footer-col">
+          <h5>Jelajahi</h5>
+          <ul>
+            <li><a href="events.html">Semua Event</a></li>
+            <li><a href="events.html?category=Musik">Musik</a></li>
+            <li><a href="events.html?category=Workshop">Workshop</a></li>
+            <li><a href="events.html?category=Seminar">Seminar</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-col">
+          <h5>Untuk Kreator</h5>
+          <ul>
+            <li><a href="auth.html?redirect=create-event.html">Buat Event</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="#">Sistem Harga</a></li>
+            <li><a href="#">Panduan Kreator</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-col">
+          <h5>Perusahaan</h5>
+          <ul>
+            <li><a href="#">Tentang Kami</a></li>
+            <li><a href="#">Pusat Bantuan</a></li>
+            <li><a href="#">Syarat & Ketentuan</a></li>
+            <li><a href="#">Kebijakan Privasi</a></li>
+            <li><a href="#">Hak Cipta</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2026 EventHive. Hak Cipta Dilindungi.</p>
+        <div class="footer-socials">
+          <a href="#">Instagram</a>
+          <a href="#">Twitter</a>
+          <a href="#">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scroll to Top -->
+  <button class="scroll-top-btn" aria-label="Scroll to top">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+  </button>
+
+  <!-- Core JS -->
+  <script src="js/i18n.js"></script>
+  <script src="js/navbar.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/events.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Elements
+      const searchInput = document.getElementById('navbar-search-input');
+      const categorySelect = document.getElementById('filter-category');
+      const dateSelect = document.getElementById('filter-date');
+      const sortSelect = document.getElementById('filter-sort');
+      const container = document.getElementById('browse-container');
+      
+      // Get URL params
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryParam = urlParams.get('q');
+      const catParam = urlParams.get('category');
+      
+      if (queryParam) searchInput.value = queryParam;
+      if (catParam) categorySelect.value = catParam;
+      
+      // Debounce logic for search
+      let debounceTimeout;
+      
+      // Event Listeners
+      searchInput.addEventListener('input', () => {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(renderEvents, 300);
+      });
+      
+      categorySelect.addEventListener('change', renderEvents);
+      dateSelect.addEventListener('change', renderEvents);
+      sortSelect.addEventListener('change', renderEvents);
+      document.addEventListener('languageChanged', renderEvents);
+      
+      // Render Logic
+      function renderEvents() {
+        const query = searchInput.value;
+        const category = categorySelect.value;
+        const dateFilter = dateSelect.value;
+        const sort = sortSelect.value;
+        
+        const filteredEvents = window.api.searchEvents(query, category, dateFilter, sort);
+        
+        container.innerHTML = '';
+        
+        if (filteredEvents.length === 0) {
+          container.innerHTML = `
+            <div class="no-results reveal">
+              <div class="no-results-icon">🔍</div>
+              <h3 data-i18n="browse.no_results">Tidak ada event yang ditemukan</h3>
+              <p class="text-secondary" data-i18n="browse.no_results_desc">Coba ubah kata kunci pencarian atau filter Anda.</p>
+            </div>
+          `;
+          window.i18n.init(); // re-translate new content
+          return;
+        }
+        
+        // Render as flat grid
+        let html = `<div class="category-events-grid reveal">`;
+        filteredEvents.forEach(e => {
+          html += createEventCard(e);
+        });
+        html += `</div>`;
+        container.innerHTML = html;
+        
+        window.i18n.init(); // re-translate
+      }
+      
+      function createEventCard(event) {
+        const startingPrice = window.api.getStartingPrice(event.tiers);
+        const formattedPrice = window.cart.formatCurrency(startingPrice);
+        const date = window.api.formatDate(event.date);
+        
+        return `
+          <a href="event-detail.html?id=${event.id}" class="event-card hover-lift">
+            <div class="card-image">
+              <img src="${event.image}" alt="${event.title}" onerror="this.src='https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=800&q=80'">
+              <div class="card-badge badge badge-primary">${event.category}</div>
+            </div>
+            <div class="card-body">
+              <div class="card-meta">
+                <div class="card-meta-item">
+                  <span>${event.location}</span>
+                </div>
+                <div class="card-meta-item">
+                  <span>${date}</span>
+                </div>
+              </div>
+              <h4>${event.title}</h4>
+              <div class="card-price">
+                <span class="card-price-label">Mulai dari</span>
+                <span class="card-price-amount">${formattedPrice}</span>
+                <span class="card-status">Tiket Tersedia</span>
+              </div>
+            </div>
+          </a>
+        `;
+      }
+      
+      // Initial render
+      renderEvents();
+    });
+  </script>
+</body>
+</html>

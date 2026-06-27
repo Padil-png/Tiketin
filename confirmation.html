@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pembayaran Berhasil - EventHive</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/checkout.css">
+</head>
+<body>
+
+  <canvas class="confetti-canvas" id="confetti"></canvas>
+
+  <main class="confirmation-page">
+    <div class="confirmation-card reveal-scale">
+      <div class="confirmation-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </div>
+      
+      <h1>Pembayaran Berhasil!</h1>
+      <p class="confirmation-msg">Terima kasih, pesanan tiket Anda telah berhasil dikonfirmasi. E-Ticket telah dikirimkan ke email Anda.</p>
+      
+      <div id="ticket-container">
+        <!-- Rendered by JS -->
+      </div>
+      
+      <div class="confirmation-actions mt-8">
+        <a href="index.html" class="btn btn-outline">Kembali ke Beranda</a>
+        <a href="events.html" class="btn btn-primary">Jelajahi Event Lain</a>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/cart.js"></script>
+  <script src="js/events.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const orderId = urlParams.get('id');
+      
+      const orders = JSON.parse(localStorage.getItem('eventhive_orders') || '[]');
+      const order = orders.find(o => o.orderId === orderId);
+      
+      if (!order) {
+        document.getElementById('ticket-container').innerHTML = `
+          <div class="alert alert-error">Data pesanan tidak ditemukan.</div>
+        `;
+        return;
+      }
+      
+      // Render E-Ticket (we just render the first item for simplicity, normally would list all)
+      const item = order.items[0];
+      const html = `
+        <div class="e-ticket animate-fade-in-up stagger-1 text-left">
+          <div class="e-ticket-header">
+            <div>
+              <h4>${item.eventTitle}</h4>
+              <div class="text-sm text-secondary">${item.eventVenue}</div>
+            </div>
+            <div class="e-ticket-qr">
+              <!-- Placeholder QR -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--bg-secondary)" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect><rect x="6" y="6" width="1" height="1"></rect><rect x="17" y="6" width="1" height="1"></rect><rect x="17" y="17" width="1" height="1"></rect><rect x="6" y="17" width="1" height="1"></rect></svg>
+            </div>
+          </div>
+          
+          <div class="e-ticket-details">
+            <div class="e-ticket-field">
+              <label>Nama Pemesan</label>
+              <span>${order.buyer.name}</span>
+            </div>
+            <div class="e-ticket-field">
+              <label>Order ID</label>
+              <span>${order.orderId}</span>
+            </div>
+            <div class="e-ticket-field">
+              <label>Kategori Tiket</label>
+              <span class="text-accent">${item.tierName} (${item.qty}x)</span>
+            </div>
+            <div class="e-ticket-field">
+              <label>Status Pembayaran</label>
+              <span class="text-success">LUNAS - ${order.paymentMethod}</span>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('ticket-container').innerHTML = html;
+      
+      // Setup Confetti
+      setupConfetti();
+    });
+    
+    // Simple Confetti implementation
+    function setupConfetti() {
+      const canvas = document.getElementById('confetti');
+      const ctx = canvas.getContext('2d');
+      
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      
+      const particles = [];
+      const colors = ['#8b5cf6', '#06b6d4', '#ec4899', '#22c55e', '#f59e0b'];
+      
+      for (let i = 0; i < 150; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          size: Math.random() * 8 + 4,
+          speedY: Math.random() * 3 + 2,
+          speedX: Math.random() * 2 - 1,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          rotationSpeed: Math.random() * 10 - 5
+        });
+      }
+      
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let active = false;
+        
+        particles.forEach(p => {
+          p.y += p.speedY;
+          p.x += p.speedX;
+          p.rotation += p.rotationSpeed;
+          
+          if (p.y < canvas.height) active = true;
+          
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rotation * Math.PI / 180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+          ctx.restore();
+        });
+        
+        if (active) {
+          requestAnimationFrame(animate);
+        }
+      }
+      
+      animate();
+    }
+  </script>
+</body>
+</html>

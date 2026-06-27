@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - EventHive</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/checkout.css">
+</head>
+<body>
+
+  <!-- Navbar (Simple version for checkout) -->
+  <nav class="navbar scrolled">
+    <div class="container">
+      <a href="index.html" class="navbar-logo">
+        <div class="logo-icon">🐝</div>
+        <span>EventHive</span>
+      </a>
+      <div style="font-size: var(--text-sm); color: var(--text-muted); font-weight: var(--fw-medium)">Checkout Pembayaran</div>
+    </div>
+  </nav>
+
+  <main class="checkout-page page-content">
+    <div class="container">
+      
+      <div class="checkout-layout">
+        <!-- Form Area -->
+        <div class="checkout-form-area animate-fade-in-up">
+          <form id="checkout-form" class="checkout-form-card">
+            <h2>Data Pembeli</h2>
+            
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Nama Lengkap <span class="required">*</span></label>
+                <input type="text" id="buyer-name" class="form-input" placeholder="Masukkan nama sesuai KTP" required>
+              </div>
+              
+              <div class="form-grid-2col">
+                <div class="form-group">
+                  <label class="form-label">Email <span class="required">*</span></label>
+                  <input type="email" id="buyer-email" class="form-input" placeholder="email@contoh.com" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Nomor WhatsApp <span class="required">*</span></label>
+                  <input type="tel" id="buyer-phone" class="form-input" placeholder="0812xxxx" required>
+                </div>
+              </div>
+            </div>
+            
+            <div class="payment-section mt-8">
+              <h3>Metode Pembayaran</h3>
+              
+              <div class="payment-methods" id="payment-methods">
+                <label class="payment-method selected">
+                  <input type="radio" name="payment" value="BCA Virtual Account" checked class="sr-only">
+                  <div class="payment-radio"></div>
+                  <div class="payment-icon text-info">🏦</div>
+                  <div class="payment-info">
+                    <h4>BCA Virtual Account</h4>
+                    <p>Pembayaran otomatis terverifikasi</p>
+                  </div>
+                </label>
+                
+                <label class="payment-method">
+                  <input type="radio" name="payment" value="GoPay" class="sr-only">
+                  <div class="payment-radio"></div>
+                  <div class="payment-icon text-success">📱</div>
+                  <div class="payment-info">
+                    <h4>GoPay</h4>
+                    <p>Potongan biaya admin khusus</p>
+                  </div>
+                </label>
+                
+                <label class="payment-method">
+                  <input type="radio" name="payment" value="Kartu Kredit" class="sr-only">
+                  <div class="payment-radio"></div>
+                  <div class="payment-icon" style="color: var(--violet-400)">💳</div>
+                  <div class="payment-info">
+                    <h4>Kartu Kredit / Debit</h4>
+                    <p>Visa, Mastercard, JCB</p>
+                  </div>
+                </label>
+              </div>
+            </div>
+            
+          </form>
+        </div>
+        
+        <!-- Summary Sidebar -->
+        <div class="checkout-sidebar animate-fade-in-left stagger-1">
+          <div class="order-summary-card">
+            <h3>Ringkasan Pesanan</h3>
+            
+            <div class="order-items" id="order-items-container">
+              <!-- Rendered via JS -->
+            </div>
+            
+            <div class="order-totals">
+              <div class="order-total-row">
+                <span>Subtotal Tiket</span>
+                <span id="summary-subtotal">Rp 0</span>
+              </div>
+              <div class="order-total-row">
+                <span>Biaya Layanan</span>
+                <span>Rp 5.000</span>
+              </div>
+              <div class="order-total-row grand-total">
+                <span>Total Pembayaran</span>
+                <span id="summary-total" class="text-accent">Rp 0</span>
+              </div>
+            </div>
+            
+            <button type="button" id="btn-pay" class="btn btn-primary btn-lg mt-6" style="width: 100%">
+              Bayar Sekarang
+            </button>
+            <p style="text-align:center; font-size:12px; color:var(--text-muted); margin-top:12px;">Selesaikan pembayaran dalam waktu 15:00</p>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </main>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/cart.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Setup Payment Selection Visuals
+      const paymentLabels = document.querySelectorAll('.payment-method');
+      const paymentRadios = document.querySelectorAll('input[name="payment"]');
+      
+      paymentRadios.forEach(radio => {
+        radio.addEventListener('change', () => {
+          paymentLabels.forEach(l => l.classList.remove('selected'));
+          if (radio.checked) {
+            radio.closest('.payment-method').classList.add('selected');
+          }
+        });
+      });
+      
+      // Load Cart Data
+      window.cart.load();
+      const items = window.cart.items;
+      
+      if (items.length === 0) {
+        document.querySelector('.checkout-layout').innerHTML = `
+          <div class="empty-state reveal" style="grid-column: 1 / -1">
+            <div class="empty-icon">🛒</div>
+            <h3>Keranjang Anda Kosong</h3>
+            <p class="text-secondary mb-6">Silakan pilih tiket event terlebih dahulu sebelum melakukan checkout.</p>
+            <a href="events.html" class="btn btn-primary">Jelajahi Event</a>
+          </div>
+        `;
+        return;
+      }
+      
+      // Render Order Items
+      const container = document.getElementById('order-items-container');
+      const subtotalVal = document.getElementById('summary-subtotal');
+      const totalVal = document.getElementById('summary-total');
+      
+      let html = '';
+      items.forEach(item => {
+        html += `
+          <div class="order-item">
+            <div class="order-item-image">
+              <img src="${item.eventImage}" alt="${item.eventTitle}" onerror="this.src='https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=200&q=80'">
+            </div>
+            <div class="order-item-info">
+              <h4>${item.eventTitle}</h4>
+              <div class="item-tier">${item.tierName}</div>
+              <div class="item-qty">${item.qty} Tiket @ ${window.cart.formatCurrency(item.price)}</div>
+            </div>
+            <div class="order-item-price">
+              ${window.cart.formatCurrency(item.price * item.qty)}
+            </div>
+          </div>
+        `;
+      });
+      
+      container.innerHTML = html;
+      
+      const subtotal = window.cart.getSubtotal();
+      const serviceFee = 5000;
+      const total = subtotal + serviceFee;
+      
+      subtotalVal.textContent = window.cart.formatCurrency(subtotal);
+      totalVal.textContent = window.cart.formatCurrency(total);
+      
+      // Handle Payment Process
+      const btnPay = document.getElementById('btn-pay');
+      const form = document.getElementById('checkout-form');
+      
+      btnPay.addEventListener('click', () => {
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+        
+        btnPay.innerHTML = '<div class="spinner spinner-sm" style="border-top-color: white"></div> Memproses...';
+        btnPay.disabled = true;
+        
+        // Simulate API Processing
+        setTimeout(() => {
+          // Save Order Data
+          const orderId = 'ORD-' + Math.floor(Math.random() * 1000000);
+          const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
+          
+          const order = {
+            orderId,
+            date: new Date().toISOString(),
+            buyer: {
+              name: document.getElementById('buyer-name').value,
+              email: document.getElementById('buyer-email').value,
+              phone: document.getElementById('buyer-phone').value
+            },
+            items: items,
+            subtotal,
+            serviceFee,
+            total,
+            paymentMethod,
+            status: 'completed'
+          };
+          
+          let orders = [];
+          try {
+            orders = JSON.parse(localStorage.getItem('eventhive_orders')) || [];
+          } catch(e) {}
+          
+          orders.push(order);
+          localStorage.setItem('eventhive_orders', JSON.stringify(orders));
+          
+          // Clear cart
+          window.cart.clear();
+          
+          // Redirect
+          window.location.href = `confirmation.html?id=${orderId}`;
+        }, 1500);
+      });
+    });
+  </script>
+</body>
+</html>

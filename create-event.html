@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buat Event Baru - EventHive</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/navbar.css">
+  <link rel="stylesheet" href="css/create.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar scrolled">
+    <div class="container">
+      <a href="index.html" class="navbar-logo">
+        <div class="logo-icon">🐝</div>
+        <span>EventHive</span>
+      </a>
+      
+      <div class="navbar-actions">
+        <a href="dashboard.html" class="btn btn-sm btn-outline">Batal</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="create-page page-content">
+    <div class="container" style="max-width: 800px">
+      
+      <div class="create-header animate-fade-in-up">
+        <h1>Buat Event Baru</h1>
+        <p class="text-secondary">Isi detail event Anda. Event yang diajukan akan melalui proses verifikasi oleh tim kami sebelum dipublikasikan.</p>
+      </div>
+      
+      <div class="create-stepper mb-8">
+        <div class="step active">1. Detail Event</div>
+        <div class="step-divider"></div>
+        <div class="step">2. Lokasi & Waktu</div>
+        <div class="step-divider"></div>
+        <div class="step">3. Tiket</div>
+      </div>
+      
+      <form id="create-form" class="create-card animate-fade-in-up stagger-1">
+        
+        <!-- Step 1 -->
+        <div id="step-1" class="form-step active">
+          <h3>Informasi Dasar</h3>
+          
+          <div class="form-group">
+            <label class="form-label">Nama Event</label>
+            <input type="text" id="ev-name" class="form-input" placeholder="Contoh: Konser Musik Jakarta 2026" required>
+          </div>
+          
+          <div class="form-grid-2col">
+            <div class="form-group">
+              <label class="form-label">Kategori</label>
+              <select id="ev-category" class="form-input" required>
+                <option value="Musik">Musik</option>
+                <option value="Workshop">Workshop</option>
+                <option value="Seminar">Seminar</option>
+                <option value="Festival">Festival</option>
+                <option value="Olahraga">Olahraga</option>
+                <option value="Seni & Budaya">Seni & Budaya</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Nama Penyelenggara / Organizer</label>
+              <input type="text" id="ev-org" class="form-input" placeholder="Nama perusahaan atau komunitas" required>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Deskripsi Lengkap Event</label>
+            <textarea id="ev-desc" class="form-input" rows="5" placeholder="Ceritakan detail event, bintang tamu, aturan, dll..." required></textarea>
+          </div>
+          
+          <div class="form-actions mt-6" style="justify-content: flex-end">
+            <button type="button" class="btn btn-primary btn-next">Selanjutnya</button>
+          </div>
+        </div>
+        
+        <!-- Step 2 -->
+        <div id="step-2" class="form-step" style="display: none">
+          <h3>Lokasi & Waktu Pelaksanaan</h3>
+          
+          <div class="form-group">
+            <label class="form-label">Tanggal Pelaksanaan</label>
+            <input type="date" id="ev-date" class="form-input" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Waktu (Jam Mulai - Selesai)</label>
+            <input type="text" id="ev-time" class="form-input" placeholder="Contoh: 18:00 - 22:00 WIB" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Nama Tempat / Venue</label>
+            <input type="text" id="ev-venue" class="form-input" placeholder="Contoh: Gelora Bung Karno" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Kota</label>
+            <input type="text" id="ev-location" class="form-input" placeholder="Contoh: Jakarta, Indonesia" required>
+          </div>
+          
+          <div class="form-actions mt-6">
+            <button type="button" class="btn btn-outline btn-prev">Kembali</button>
+            <button type="button" class="btn btn-primary btn-next">Selanjutnya</button>
+          </div>
+        </div>
+        
+        <!-- Step 3 -->
+        <div id="step-3" class="form-step" style="display: none">
+          <h3>Kategori Tiket</h3>
+          <p class="text-sm text-secondary mb-4">Buat minimal 1 kategori tiket. Event akan ditinjau dalam 1x24 jam.</p>
+          
+          <div id="tickets-container">
+            <!-- Initial Ticket -->
+            <div class="ticket-entry-card">
+              <div class="form-grid-2col">
+                <div class="form-group">
+                  <label class="form-label">Nama Kategori (Tiers)</label>
+                  <input type="text" class="form-input t-name" placeholder="Contoh: VIP" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Harga (Rp) - Isi 0 jika Gratis</label>
+                  <input type="number" class="form-input t-price" placeholder="Contoh: 500000" min="0" required>
+                </div>
+              </div>
+              <div class="form-group mb-0">
+                <label class="form-label">Kuota Tiket</label>
+                <input type="number" class="form-input t-stock" placeholder="Jumlah tiket yang dijual" min="1" required>
+              </div>
+            </div>
+          </div>
+          
+          <button type="button" id="btn-add-ticket" class="btn btn-outline btn-sm mt-4">+ Tambah Kategori Tiket Lain</button>
+          
+          <div class="alert alert-warning mt-6">
+            <strong>Perhatian:</strong> Dengan klik "Ajukan Event", Anda menyetujui syarat & ketentuan dan memastikan bahwa event ini adalah valid. Tim kami akan melakukan verifikasi sebelum tayang.
+          </div>
+          
+          <div class="form-actions mt-6">
+            <button type="button" class="btn btn-outline btn-prev">Kembali</button>
+            <button type="submit" id="btn-submit" class="btn btn-primary">Ajukan Event</button>
+          </div>
+        </div>
+        
+      </form>
+    </div>
+  </main>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/navbar.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check Auth
+      const sessionStr = localStorage.getItem('eventhive_session');
+      if (!sessionStr) {
+        window.location.href = 'auth.html?redirect=create-event.html';
+        return;
+      }
+      
+      const user = JSON.parse(sessionStr);
+      
+      // Multi-step form logic
+      let currentStep = 1;
+      const steps = [
+        document.getElementById('step-1'),
+        document.getElementById('step-2'),
+        document.getElementById('step-3')
+      ];
+      const stepIndicators = document.querySelectorAll('.step');
+      
+      function showStep(stepIndex) {
+        steps.forEach((s, idx) => {
+          s.style.display = (idx + 1 === stepIndex) ? 'block' : 'none';
+        });
+        
+        stepIndicators.forEach((ind, idx) => {
+          if (idx + 1 === stepIndex) {
+            ind.classList.add('active');
+          } else if (idx + 1 < stepIndex) {
+            ind.classList.add('active'); // completed
+          } else {
+            ind.classList.remove('active');
+          }
+        });
+        
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      
+      // Next/Prev Buttons
+      document.querySelectorAll('.btn-next').forEach(btn => {
+        btn.addEventListener('click', () => {
+          // Validate current step fields
+          const inputs = steps[currentStep - 1].querySelectorAll('input[required], select[required], textarea[required]');
+          let isValid = true;
+          inputs.forEach(input => {
+            if (!input.checkValidity()) {
+              input.reportValidity();
+              isValid = false;
+            }
+          });
+          
+          if (isValid && currentStep < 3) {
+            currentStep++;
+            showStep(currentStep);
+          }
+        });
+      });
+      
+      document.querySelectorAll('.btn-prev').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (currentStep > 1) {
+            currentStep--;
+            showStep(currentStep);
+          }
+        });
+      });
+      
+      // Add Ticket dynamic fields
+      const tContainer = document.getElementById('tickets-container');
+      document.getElementById('btn-add-ticket').addEventListener('click', () => {
+        const div = document.createElement('div');
+        div.className = 'ticket-entry-card mt-4';
+        div.innerHTML = `
+          <div class="flex justify-between" style="display:flex; justify-content:space-between; margin-bottom:12px">
+            <h4 style="font-size:14px; margin:0">Kategori Tiket Tambahan</h4>
+            <button type="button" class="btn-remove-ticket" style="background:none; border:none; color:var(--text-error); cursor:pointer; font-size:12px">Hapus</button>
+          </div>
+          <div class="form-grid-2col">
+            <div class="form-group">
+              <label class="form-label">Nama Kategori</label>
+              <input type="text" class="form-input t-name" placeholder="Contoh: Normal" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Harga (Rp)</label>
+              <input type="number" class="form-input t-price" placeholder="Contoh: 300000" min="0" required>
+            </div>
+          </div>
+          <div class="form-group mb-0">
+            <label class="form-label">Kuota Tiket</label>
+            <input type="number" class="form-input t-stock" placeholder="Jumlah tiket yang dijual" min="1" required>
+          </div>
+        `;
+        tContainer.appendChild(div);
+        
+        div.querySelector('.btn-remove-ticket').addEventListener('click', () => {
+          div.remove();
+        });
+      });
+      
+      // Form Submit
+      document.getElementById('create-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const btn = document.getElementById('btn-submit');
+        btn.disabled = true;
+        btn.innerHTML = '<div class="spinner spinner-sm" style="border-top-color: white"></div>';
+        
+        // Collect Data
+        setTimeout(() => {
+          // Parse tiers
+          const tierElements = document.querySelectorAll('.ticket-entry-card');
+          const tiers = [];
+          tierElements.forEach(t => {
+            tiers.push({
+              name: t.querySelector('.t-name').value,
+              price: parseInt(t.querySelector('.t-price').value),
+              stock: parseInt(t.querySelector('.t-stock').value),
+              benefits: []
+            });
+          });
+          
+          const newEvent = {
+            id: 'evt_user_' + Date.now(),
+            userId: user.id,
+            title: document.getElementById('ev-name').value,
+            category: document.getElementById('ev-category').value,
+            organizer: document.getElementById('ev-org').value,
+            description: document.getElementById('ev-desc').value,
+            date: document.getElementById('ev-date').value,
+            time: document.getElementById('ev-time').value,
+            venue: document.getElementById('ev-venue').value,
+            location: document.getElementById('ev-location').value,
+            // Provide a random placeholder image based on category
+            image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80",
+            status: "pending", // MUST BE PENDING (Verification feature)
+            trending: false,
+            tiers: tiers,
+            rundown: [] // default empty
+          };
+          
+          // Save to localStorage
+          const allEvents = JSON.parse(localStorage.getItem('eventhive_events') || '[]');
+          allEvents.push(newEvent);
+          localStorage.setItem('eventhive_events', JSON.stringify(allEvents));
+          
+          window.toast.show('Event berhasil diajukan! Menunggu verifikasi admin.', 'success');
+          
+          setTimeout(() => {
+            window.location.href = 'dashboard.html';
+          }, 2000);
+          
+        }, 1500);
+      });
+    });
+  </script>
+</body>
+</html>
